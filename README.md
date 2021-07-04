@@ -1,0 +1,3 @@
+# 💸 JobAI - Prédis ton salaire | Predict your salary
+
+...
