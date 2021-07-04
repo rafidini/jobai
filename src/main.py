@@ -26,7 +26,7 @@ education.pop('')
 
 
 # Streamlit Page
-st.title('💸 JobAI - Prédit ton salaire')
+st.title('💸 JobAI - Prédis ton salaire')
 
 st.subheader('Formulaire')
 
