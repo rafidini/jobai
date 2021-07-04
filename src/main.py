@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import streamlit as st
 from pickle import load
 from scipy import sparse
@@ -14,6 +15,7 @@ st.set_page_config(
 )
 
 # Load variables
+cm = sns.light_palette("green", as_cmap=True)
 experience = load_variable('experience.pkl')
 education = load_variable('education.pkl')
 employment_type = load_variable('employment_type.pkl')
@@ -50,12 +52,22 @@ prediction = st.button('Prédire le salaire')
 
 if prediction:
     # Preprocessing
-    X = vectorizer.transform(np.array([x_title + ' ' + x_description]))
+    X = vectorizer.transform(np.array([x_title.lower() + ' ' + x_description.lower()]))
     X = sparse.hstack((X, np.array([education[x_education]])))
     X = sparse.hstack((X, np.array([experience[x_experience]])))
     X = sparse.hstack((X, np.array([employment_type[x_employment_type]])))
+
+    # Predict
     salary = round(model.predict(X)[0])
+    features = np.array(vectorizer.get_feature_names() + ['Niveau scolaire', 'Expérience', 'Type de contrat'])
+    feature_importance = pd.Series(
+        X.toarray().ravel()[(X.toarray() > 0).ravel()], 
+        index=features[(X.toarray() > 0).ravel()]
+    )
+    feature_importance.name = 'Importance'
 
     # Display
     st.subheader('Salaire')
     st.success(f'**{salary}**€')
+    st.subheader('Importance des variables')
+    st.dataframe(feature_importance.sort_values(ascending=False).to_frame().style.background_gradient(cmap=cm))
