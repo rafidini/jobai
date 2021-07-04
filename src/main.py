@@ -70,4 +70,6 @@ if prediction:
     st.subheader('Salaire')
     st.success(f'**{salary}**€')
     st.subheader('Importance des variables')
-    st.dataframe(feature_importance.sort_values(ascending=False).to_frame().style.background_gradient(cmap=cm))
+    st.dataframe(
+        feature_importance.sort_values(ascending=False).to_frame().style.background_gradient(cmap=cm),
+        height=600)
